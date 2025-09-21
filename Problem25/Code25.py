@@ -1,27 +1,31 @@
 """
-Given a string Text, its k-mer composition Compositionk(Text) is the collection of all k-mer substrings of Text (including repeated k-mers). For example,
+String Spelled by a Genome Path Problem
 
-Composition3(TATGGGGTGC) = {ATG, GGG, GGG, GGT, GTG, TAT, TGC, TGG}
+Find the string spelled by a genome path.
 
-Note that we have listed k-mers in lexicographic order (i.e., how they would appear in a dictionary) rather than in the order of their appearance in TATGGGGTGC. We have done this because the correct ordering of the reads is unknown when they are generated.
-String Composition Problem
+Given: A sequence of k-mers Pattern1, ... , Patternn such that the last k - 1 symbols of Patterni are equal to the first k - 1 symbols of Patterni+1 for i from 1 to n-1.
 
-Generate the k-mer composition of a string.
-
-Given: An integer k and a string Text.
-
-Return: Compositionk(Text) (the k-mers can be provided in any order).
+Return: A string Text of length k+n-1 where the i-th k-mer in Text is equal to Patterni for all i.
 """
 import glob
-import sys
+def prefix(text):
+    return text[:-1]
+def suffix(text):
+    return text[1:]
 
-
-def Composition(k, text): #Composition function, gets all kmers in lexicographic order
-    composition_list = {} # dictionary to save kmers
-    for i in range(len(text)-k+1): # loop to explore all k-pattern windows and adding in dictionary
-        composition_list[text[i:i+k]] = None #Update kmer key with None Value, the only keys are working
-    return sorted(composition_list) #gives the ordered output with all kmers in the Sequence
-
+def Reconstruction_seq(pattern_dict, last_key = None):
+    if len(pattern_dict) == 1:
+        if last_key is None:
+            return next(iter(pattern_dict))
+        return ""
+    if last_key == None:
+        firstpattern = next(iter(pattern_dict))
+        return firstpattern + Reconstruction_seq(pattern_dict, firstpattern)
+    pattern_dict.pop(last_key)
+    for key in pattern_dict:
+        #print(prefix(last_key)," == ",suffix(key))
+        if suffix(last_key) == prefix(key):
+            return key[-1] + Reconstruction_seq(pattern_dict, key)
 
 #############################################################################################
 ################### EVAL FUCTION ###########################
@@ -62,6 +66,8 @@ input_files = glob.glob(f"{folder_path}/*.txt")
 #MODIFY THIS SECTION FOR EACH FUNCTION
 for input_file in input_files:
     file_load = read_file_txt(input_file)
-    composition_s = Composition(int(file_load[0].strip()), file_load[1].strip())
-    write_file_txt(input_file, composition_s)
-
+    pattern_dict = dict()
+    for l in file_load:
+        pattern_dict[l.strip("\n")] = None
+    seq_s = Reconstruction_seq(pattern_dict)
+    write_file_txt(input_file, seq_s)
