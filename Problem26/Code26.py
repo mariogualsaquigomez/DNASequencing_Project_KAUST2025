@@ -40,7 +40,7 @@ def side_finder(pat_dict, pattern, direction):
 #for p in dict_pat_t:
 #    side_finder(dict_pat_t, p,'end')
 
-def Reconstruction_seq(seqList):
+def Overlap_seq(seqList):
     initial_seq = ""
     end_seq = ""
     seq_graph = {}
@@ -120,5 +120,5 @@ for input_file in input_files:
     pattern_dict = dict()
     for l in file_load:
         pattern_dict[l.strip("\n")] = None
-    seq_s = Reconstruction_seq(pattern_dict)
+    seq_s = Overlap_seq(pattern_dict)
     write_file_txt(input_file, seq_s)
