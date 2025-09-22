@@ -43,6 +43,8 @@ def side_finder(pat_dict, pattern, direction):
 def Reconstruction_seq(seqList):
     initial_seq = ''
     end_seq = ''
+    reconstructed_seq = ''
+    d = len(seqList)
     for p in seqList:
         if side_finder(seqList, p, 'begin'):
             initial_seq = p
@@ -55,17 +57,19 @@ def Reconstruction_seq(seqList):
     seqList.pop(initial_seq)
     seqList.pop(end_seq)
     k = len(initial_seq)
-    for q in seqList:
-        if suffix(initial_seq[-k:]) == prefix(q):
-            initial_seq = initial_seq + q[-1]
-            continue
-        if suffix(q) == suffix(initial_seq[:k + 1]):
-            end_seq = q[0] + end_seq
-            continue
-        print(f'Esta sequencia no aparece: q')
-    if suffix(initial_seq[-k:]) == prefix(end_seq[:k + 1]):
-        final_seq = initial_seq + end_seq[k - 1:]
-    return final_seq
+    while seqList:
+        for o in ['A', 'G', 'C', 'T']:
+            if suffix(initial_seq[-k:])+ o in seqList:
+                initial_seq = initial_seq + o
+                seqList.pop(initial_seq[-k:])
+                break
+            if o + prefix(end_seq[:k]) in seqList:
+                end_seq = o  + end_seq
+                seqList.pop(end_seq[:k])
+                break
+    if suffix(initial_seq[-k:]) == prefix(end_seq[:k]):
+        reconstructed_seq = initial_seq + end_seq[k - 1:]
+    return reconstructed_seq
 
 
 #Reconstruction(dict_pat_t)
