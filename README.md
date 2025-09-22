@@ -1,7 +1,9 @@
 # $$BioE 201 - Chapter3$$ 
 
 > Bioinformatics Algorithms - An Active Learning Approach
+
 > Chapter 3
+
 >__Rosalind Problems 24-36__
 
 <br>
