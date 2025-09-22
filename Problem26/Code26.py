@@ -74,7 +74,7 @@ def Reconstruction_seq(seqList):
                 break
             continue
     seq_graph[last_forward] = last_reverse
-    nodes_list = [f"{key} -> {value}" for key, value in seq_graph.items()]
+    nodes_list = sorted([f"{key} -> {value}" for key, value in seq_graph.items()])
     return nodes_list
 
 ################### EVAL FUCTION ###########################
