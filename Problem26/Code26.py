@@ -74,28 +74,9 @@ def Reconstruction_seq(seqList):
                 break
             continue
     seq_graph[last_forward] = last_reverse
-    nodes_list = [f"{key} --> {value}" for key, value in seq_graph.items()]
+    nodes_list = [f"{key} -> {value}" for key, value in seq_graph.items()]
     return nodes_list
 
-
-#Reconstruction(dict_pat_t)
-
-# RECURRENT FUNCTION
-# def Reconstruction_seq(pattern_dict, last_key = None):
-#     if len(pattern_dict) == 1:
-#         if last_key is None:
-#             return next(iter(pattern_dict))
-#         return ""
-#     if last_key == None:
-#         firstpattern = next(iter(pattern_dict))
-#         return firstpattern + Reconstruction_seq(pattern_dict, firstpattern)
-#     pattern_dict.pop(last_key)
-#     for key in pattern_dict:
-#         #print(prefix(last_key)," == ",suffix(key))
-#         if suffix(last_key) == prefix(key):
-#             return key[-1] + Reconstruction_seq(pattern_dict, key)
-
-#############################################################################################
 ################### EVAL FUCTION ###########################
 #Testing with files
 def read_file_txt(file_path):
