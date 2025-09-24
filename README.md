@@ -20,8 +20,8 @@ The above code solutions were written in jupyter notebooks. Will organize them l
 - [x] p26
 - [x] p27
 - [x] p28
-- [ ] p29
-- [ ] p30
+- [x] p29
+- [x] p30
 - [ ] p31
 - [ ] p32
 - [ ] p33
