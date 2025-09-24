@@ -7,8 +7,9 @@ class Node:
         self.neighbors = [] # List to store references to neighboring Node objects
 
     def add_neighbor(self, neighbor_node):
-        if neighbor_node not in self.neighbors:
-            self.neighbors.append(neighbor_node)
+        #if neighbor_node not in self.neighbors: #For unique Nodes
+            #self.neighbors.append(neighbor_node)
+        self.neighbors.append(neighbor_node)
 
     def sorted_neighbors(self):
         return sorted(self.neighbors)
@@ -48,10 +49,11 @@ class Graph:
                 graph_repr += f"{node_value} -> {",".join(neighbor_values)}\n"
         return graph_repr
 
-def PathGraph(Text, k):
+def CompositeGraph(ListPatterns):
     Debruijn_graph = Graph()
-    for i in range(len(Text)-k+1):
-        Debruijn_graph.add_edge(Text[i:i+k-1], Text[i+1:i+k])
+    k = len(ListPatterns[0])
+    for pattern in ListPatterns:
+        Debruijn_graph.add_edge(pattern[:-1], pattern[1:])
     return Debruijn_graph
 
 # Text = "AAGATTCTCTAC"
@@ -77,9 +79,9 @@ def write_file_txt(file_path, content):
     with open(output_name, "w") as f:
         match content:
             case str():
-                print(content, end="", file=f)
+                print(content, file=f)
             case int():
-                print(str(content), end="", file=f)
+                print(str(content), file=f)
             case list():
                 for text in content:
                     print(str(text), end="\n", file=f)
@@ -98,7 +100,6 @@ input_files = glob.glob(f"{folder_path}/*.txt")
 # #MODIFY THIS SECTION FOR EACH FUNCTION
 for input_file in input_files:
     file_load = read_file_txt(input_file)
-    k = int(file_load[0].strip("\n"))
-    Text = file_load[1].strip("\n")
-    graph = PathGraph(Text, k)
+    ListKmer  = [l.strip() for l in file_load]
+    graph = CompositeGraph(ListKmer)
     write_file_txt(input_file, graph.__repr__())

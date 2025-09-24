@@ -4,7 +4,7 @@ Codes related to the task of the Chapter 3 in the book Bioinformatics algorithms
 - TASK 24: PASSED
 - TASK 25: PASSED
 - TASK 26: PASSED
-- TASK 27:
+- TASK 27: PASSED
 - TASK 28:
 - TASK 29:
 - TASK 30:
