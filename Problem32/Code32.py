@@ -14,7 +14,6 @@ class Node:
     def __repr__(self):
         return f"{self.value}"
 
-
 class Graph:
     def __init__(self):
         self.nodes = {}  # Dictionary to store Node objects, keyed by their value
@@ -57,7 +56,6 @@ class Graph:
                 graph_repr += f"{node_value} -> {",".join(neighbor_values)}\n"
         return graph_repr
 
-
 def CompositeGraph(ListPatterns, k):
     Debruijn_graph = Graph()
     # k = len(ListPatterns[0])
@@ -65,14 +63,12 @@ def CompositeGraph(ListPatterns, k):
         Debruijn_graph.add_edge(pattern[:-1], pattern[1:])
     return Debruijn_graph
 
-
 def find_unexplored_edge_direct(node, visited_edges):
     """Find an unexplored edge from the given node using direct Graph object."""
     for neighbor in node.neighbors:
         if (node.value, neighbor.value) not in visited_edges:
             return neighbor
     return None
-
 
 def eulerian_cycle_direct(graph):
     """Find an Eulerian cycle in the directed graph using Graph object."""
@@ -122,7 +118,6 @@ def eulerian_cycle_direct(graph):
 
     return [node.value for node in cycle]
 
-
 def has_eulerian_cycle_direct(graph):
     """Check if the Graph object has an Eulerian cycle."""
     # Calculate in-degrees
@@ -136,7 +131,6 @@ def has_eulerian_cycle_direct(graph):
         if len(node.neighbors) != in_degree[node.value]:
             return False
     return True
-
 
 def eulerian_path_direct(graph):
     """Find an Eulerian path in the directed Graph object."""
@@ -198,7 +192,6 @@ def eulerian_path_direct(graph):
 
     return path
 
-
 def generate_binary_kmers(k):
     """Generate all possible binary k-mers."""
     if k <= 0:
@@ -210,7 +203,6 @@ def generate_binary_kmers(k):
         binary = format(i, f'0{k}b')
         kmers.append(binary)
     return kmers
-
 
 def universal_circular_string(k):
     """
@@ -258,23 +250,24 @@ if __name__ == "__main__":
     k = 4  # Change this value to generate different length universal strings
     result = universal_circular_string(k)
     if result:
-        print(f"{k}-universal circular binary string: {result}")
-        # Verify all k-mers are present
-        all_kmers = generate_binary_kmers(k)
-        # Make string circular by adding k-1 characters from the beginning
-        circular_string = result + result[:k - 1]
-        print("\nVerification - all binary {}-mers found in string:".format(k))
-        found_kmers = set()
-        for i in range(len(result)):
-            kmer = circular_string[i:i + k]
-            found_kmers.add(kmer)
-
-        all_found = True
-        for kmer in all_kmers:
-            present = kmer in found_kmers
-            print(f"{kmer}: {'Found' if present else 'Not found'}")
-            if not present:
-                all_found = False
-
-        print(f"\nAll {k}-mers present: {all_found}")
+        print(f"{result}")
+        # print(f"{k}-universal circular binary string: {result}")
+        # # Verify all k-mers are present
+        # all_kmers = generate_binary_kmers(k)
+        # # Make string circular by adding k-1 characters from the beginning
+        # circular_string = result + result[:k - 1]
+        # print("\nVerification - all binary {}-mers found in string:".format(k))
+        # found_kmers = set()
+        # for i in range(len(result)):
+        #     kmer = circular_string[i:i + k]
+        #     found_kmers.add(kmer)
+        #
+        # all_found = True
+        # for kmer in all_kmers:
+        #     present = kmer in found_kmers
+        #     print(f"{kmer}: {'Found' if present else 'Not found'}")
+        #     if not present:
+        #         all_found = False
+        #
+        # print(f"\nAll {k}-mers present: {all_found}")
 
