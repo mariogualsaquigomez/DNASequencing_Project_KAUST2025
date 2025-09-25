@@ -198,7 +198,7 @@ if __name__ == "__main__":
     kmers = ['CTTA', 'ACCA', 'TACC', 'GGCT', 'GCTT', 'TTAC']
     k = 4
     graph_seq = CompositeGraph(kmers, k)
-    
+    #We suppose all graphs and sequences received are strongly connected
     if has_eulerian_cycle_direct(graph_seq):
         cycle = eulerian_cycle_direct(graph_seq)
         print("Eulerian cycle:", " -> ".join(map(str, cycle)))
