@@ -101,28 +101,28 @@ def find_contigs(graph):
         out_degree = len(graph.nodes[node_value].neighbors)
         return in_degree == 1 and out_degree == 1
 
-    def find_non_branching_path(start_node):
-        """Find a maximal non-branching path starting from given node"""
-        path = [start_node.value]
-        current = start_node
-
-        while current.neighbors:
-            # Get the next node
-            next_node = current.neighbors[0]
-
-            # If next node is not 1-in-1-out, stop
-            if not is_1_in_1_out(next_node.value):
-                path.append(next_node.value)
-                break
-
-            path.append(next_node.value)
-            current = next_node
-
-            # If we've reached a node that's already been visited, stop
-            if next_node.value == start_node.value:
-                break
-
-        return path
+    # def find_non_branching_path(start_node):
+    #     """Find a maximal non-branching path starting from given node"""
+    #     path = [start_node.value]
+    #     current = start_node
+    #
+    #     while current.neighbors:
+    #         # Get the next node
+    #         next_node = current.neighbors[0]
+    #
+    #         # If next node is not 1-in-1-out, stop
+    #         if not is_1_in_1_out(next_node.value):
+    #             path.append(next_node.value)
+    #             break
+    #
+    #         path.append(next_node.value)
+    #         current = next_node
+    #
+    #         # If we've reached a node that's already been visited, stop
+    #         if next_node.value == start_node.value:
+    #             break
+    #
+    #     return path
 
     contigs = []
     visited = set()
