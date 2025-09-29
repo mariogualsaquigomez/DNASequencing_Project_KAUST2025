@@ -134,6 +134,7 @@ graph = CompositeGraph(patterns)
 ```
 ```mermaid
 stateDiagram-v2
+    direction LR
     AAT --> ATG
     ATG --> TGC
 ```
