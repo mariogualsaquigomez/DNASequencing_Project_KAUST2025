@@ -129,14 +129,16 @@ The CompositeGraph function:
 patterns = ["AAT", "ATG", "TGC"] 
 graph = CompositeGraph(patterns)
 # This will create a graph with edges:
-# AAT → ATG
-# ATG → TGC
+# AA → AT
+# AT → TG
+# TG → GC
 ```
 ```mermaid
 stateDiagram-v2
     direction LR
-    AAT --> ATG
-    ATG --> TGC
+    AA --> AT
+    AT --> TG
+    TG --> GC
 ```
 ## Time Complexity
 
