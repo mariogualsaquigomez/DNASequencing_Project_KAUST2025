@@ -1,38 +1,3 @@
-    FUNCTION EULERIAN_PATH(graph)
-        if graph is empty
-            return null
-        
-        // Count node degrees
-        in_degree, out_degree ← empty dictionaries
-        for each node in graph
-            count and store node's in/out degrees
-        
-        // Find start node
-        start ← find node where out_degree = in_degree + 1
-        if no such node
-            start ← find any node with out_degree > 0
-        if no start found
-            return null
-        
-        // Find path
-        stack ← [start]
-        path ← empty list
-        edges ← copy of graph's edges
-        
-        while stack not empty
-            current ← top of stack
-            if current has no edges left
-                add current to start of path
-                remove current from stack
-            else
-                next ← take an available edge from current
-                add next to stack
-        
-        // Verify path
-        if path length - 1 ≠ total edges
-            return null
-            
-        return path
 ```mermaid
 graph TD
     A[Start] --> B{Input: Directed Graph G};
@@ -75,3 +40,4 @@ graph TD
     Q -- False --> V[The 'eulerian_path' list now holds the complete path];
     V --> W[End];
 ```
+When you commit this to a GitHub repository and view the file, it will automatically render into the flowchart diagram.
