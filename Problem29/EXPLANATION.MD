@@ -13,3 +13,7 @@ graph TD
     F -->|Yes| J[Convert nodes to values<br>Return cycle]
     J --> K[End]
 ```
+
+```mermaid
+graph
+```
