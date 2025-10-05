@@ -55,13 +55,15 @@ def write_file_txt(file_path, content):
                 for key in content:
                     print(str(key), end="\n", file= f)
 
-# Getting txt files
-folder_path = "./inputs"
-input_files = glob.glob(f"{folder_path}/*.txt")
 
-#MODIFY THIS SECTION FOR EACH FUNCTION
-for input_file in input_files:
-    file_load = read_file_txt(input_file)
-    composition_s = Composition(int(file_load[0].strip()), file_load[1].strip())
-    write_file_txt(input_file, composition_s)
+if __name__ == "__main__":
+    # Getting txt files
+    folder_path = "./inputs"
+    input_files = glob.glob(f"{folder_path}/*.txt")
+
+    #MODIFY THIS SECTION FOR EACH FUNCTION
+    for input_file in input_files:
+        file_load = read_file_txt(input_file)
+        composition_s = Composition(int(file_load[0].strip()), file_load[1].strip())
+        write_file_txt(input_file, composition_s)
 

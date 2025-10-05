@@ -109,16 +109,16 @@ def write_file_txt(file_path, content):
                 for key in content:
                     print(str(key), end="\n", file=f)
 
+if __name__ == "__main__":
+    # Getting txt files
+    folder_path = "./inputs"
+    input_files = glob.glob(f"{folder_path}/*.txt")
 
-# Getting txt files
-folder_path = "./inputs"
-input_files = glob.glob(f"{folder_path}/*.txt")
-
-# #MODIFY THIS SECTION FOR EACH FUNCTION
-for input_file in input_files:
-    file_load = read_file_txt(input_file)
-    pattern_dict = dict()
-    for l in file_load:
-        pattern_dict[l.strip("\n")] = None
-    seq_s = Overlap_seq(pattern_dict)
-    write_file_txt(input_file, seq_s)
+    # #MODIFY THIS SECTION FOR EACH FUNCTION
+    for input_file in input_files:
+        file_load = read_file_txt(input_file)
+        pattern_dict = dict()
+        for l in file_load:
+            pattern_dict[l.strip("\n")] = None
+        seq_s = Overlap_seq(pattern_dict)
+        write_file_txt(input_file, seq_s)
