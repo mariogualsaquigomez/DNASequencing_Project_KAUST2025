@@ -8,6 +8,7 @@ Given: A directed graph that contains an Eulerian path, where the graph is given
 
 Return: An Eulerian path in this graph.
 """
+import glob
 
 def eulerian_path(graph):
     if not graph:
@@ -72,20 +73,72 @@ def eulerian_path(graph):
 
     return path
 
+################### EVAL FUCTION ###########################
+#Testing with files
+def read_file_txt(file_path):
+    try:
+        with open(file_path, "r") as file:
+            content = file.readlines()
+            return content
+    except FileNotFoundError:
+        print(f"Error File not found at {file_path}")
+    except Exception as error:
+        print(f"Error while reading file {file_path}: {error}")
 
-graph = {
-    0: [2],
-    1: [3],
-    2: [1],
-    3: [0, 4],
-    6: [3, 7],
-    7: [8],
-    8: [9],
-    9: [6]
-}
 
-path = eulerian_path(graph)
-if path:
-    print("Eulerian path:", " -> ".join(map(str, path)))
-else:
-    print("No Eulerian path exists")
+def write_file_txt(file_path, content):
+    name_split = file_path.split("/")
+    output_name = f"./outputs/{name_split[-1].strip(".txt")}_output.txt"
+    with open(output_name, "w") as f:
+        match content:
+            case str():
+                print(content, file=f)
+            case int():
+                print(str(content), file=f)
+            case list():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case set():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case dict():
+                for key in content:
+                    print(str(key), end="\n", file=f)
+                
+# Example usage
+# graph = {
+#     0: [2],
+#     1: [3],
+#     2: [1],
+#     3: [0, 4],
+#     6: [3, 7],
+#     7: [8],
+#     8: [9],
+#     9: [6]
+# }
+# 
+# path = eulerian_path(graph)
+# if path:
+#     print("Eulerian path:", " -> ".join(map(str, path)))
+# else:
+#     print("No Eulerian path exists")
+# Getting txt files
+if __name__ == "__main__":
+    folder_path = "./inputs"
+    input_files = glob.glob(f"{folder_path}/*.txt")
+
+    # #MODIFY THIS SECTION FOR EACH FUNCTION
+    for input_file in input_files:
+        file_load = read_file_txt(input_file)
+        file_load = [l.strip() for l in file_load]
+        graph = {}
+        for line in file_load:
+            (node, neighbors) = line.split(" -> ")
+            neighbors = neighbors.split(",")
+            graph[node] = neighbors
+        path = eulerian_path(graph)
+        if path:
+            solution = "->".join(map(str, path))
+        else:
+            solution = "The graph does not contain an Eulerian path"
+        write_file_txt(input_file, solution)

@@ -1,57 +1,36 @@
+import glob
 from collections import defaultdict
 
-def find_unexplored_edge(graph, visited_edges, node):
-    """Find an unexplored edge from the given node."""
-    for neighbor in graph[node]:
-        if (node, neighbor) not in visited_edges:
-            return neighbor
-    return None
 
-def eulerian_cycle(graph):
-    """Find an Eulerian cycle in the directed graph."""
-    # Convert graph to list of edges format and count total edges
-    total_edges = sum(len(neighbors) for neighbors in graph.values())
+def eulerian_cycle(adj):
+    # making a shallow copy
+    g = {u: list(vs) for u, vs in adj.items()}
 
-    # Initialize visited edges set
-    visited_edges = set()
+    # choose a start node with outgoing edges
+    start = next((u for u in g if g[u]), None)
 
-    # Start from any node (we'll use the first node in the graph)
-    start = list(graph.keys())[0]
-    cycle = [start]
-    current = start
+    #     print("start: ", start)
+    stack, cycle = [start], []
 
-    # Form initial cycle
-    while True:
-        next_node = find_unexplored_edge(graph, visited_edges, current)
-        if next_node is None:
-            break
-        visited_edges.add((current, next_node))
-        cycle.append(next_node)
-        current = next_node
+    while stack:
+        v = stack[-1]
 
-    # While there are unexplored edges
-    while len(visited_edges) < total_edges:
-        # Find a node in cycle with unexplored edges
-        new_start = None
-        for i, node in enumerate(cycle):
-            if find_unexplored_edge(graph, visited_edges, node) is not None:
-                new_start = i
-                break
+        # if v exists, we pop from the adj_list, and append to stack
+        if g[v]:
+            w = g[v].pop()  # consume edge v->w
+            stack.append(w)
 
-        # Form new cycle starting from new_start
-        new_cycle = cycle[new_start:]
-        new_cycle.extend(cycle[1:new_start + 1])
-        cycle = new_cycle
+        # if no vs under that g (all popped for that g), then we pop from stack and add to cycle
+        else:
+            popped = stack.pop()
+            cycle.append(popped)
 
-        # Add the random walk part
-        current = cycle[-1]
-        while True:
-            next_node = find_unexplored_edge(graph, visited_edges, current)
-            if next_node is None:
-                break
-            visited_edges.add((current, next_node))
-            cycle.append(next_node)
-            current = next_node
+    #         print("\nstack: ", stack)
+    #         print("cycle: ", cycle)
+    #         print(g)
+
+    # reverse to correct order
+    cycle.reverse()
 
     return cycle
 
@@ -68,25 +47,78 @@ def has_eulerian_cycle(graph):
         if len(graph[node]) != in_degree[node]:
             return False
     return True
+################### EVAL FUCTION ###########################
+#Testing with files
+def read_file_txt(file_path):
+    try:
+        with open(file_path, "r") as file:
+            content = file.readlines()
+            return content
+    except FileNotFoundError:
+        print(f"Error File not found at {file_path}")
+    except Exception as error:
+        print(f"Error while reading file {file_path}: {error}")
+
+
+def write_file_txt(file_path, content):
+    name_split = file_path.split("/")
+    output_name = f"./outputs/{name_split[-1].strip(".txt")}_output.txt"
+    with open(output_name, "w") as f:
+        match content:
+            case str():
+                print(content, file=f)
+            case int():
+                print(str(content), file=f)
+            case list():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case set():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case dict():
+                for key in content:
+                    print(str(key), end="\n", file=f)
+
+
+# Example graph
+# graph = {
+#         0: [3],
+#         1: [0],
+#         2: [1, 6],
+#         3: [2],
+#         4: [2],
+#         5: [4],
+#         6: [5, 8],
+#         7: [9],
+#         8: [7],
+#         9: [6]
+#     }
+#
+# if has_eulerian_cycle(graph):
+#     cycle = eulerian_cycle(graph)
+#     print("Eulerian cycle:", " -> ".join(map(str, cycle)))
+# else:
+#     print("The graph does not contain an Eulerian cycle")
 
 # Example usage
 if __name__ == "__main__":
-    # Example graph
-    graph = {
-        0: [3],
-        1: [0],
-        2: [1, 6],
-        3: [2],
-        4: [2],
-        5: [4],
-        6: [5, 8],
-        7: [9],
-        8: [7],
-        9: [6]
-    }
 
-    if has_eulerian_cycle(graph):
-        cycle = eulerian_cycle(graph)
-        print("Eulerian cycle:", " -> ".join(map(str, cycle)))
-    else:
-        print("The graph does not contain an Eulerian cycle")
+    # Getting txt files
+    folder_path = "./inputs"
+    input_files = glob.glob(f"{folder_path}/*.txt")
+
+    # #MODIFY THIS SECTION FOR EACH FUNCTION
+    for input_file in input_files:
+        file_load = read_file_txt(input_file)
+        file_load = [l.strip() for l in file_load]
+        graph = {}
+        for line in file_load:
+            (node, neighbors) = line.split(" -> ")
+            neighbors = neighbors.split(",")
+            graph[node] = graph.get(node, []) + neighbors
+        if has_eulerian_cycle(graph):
+            cycle = eulerian_cycle(graph)
+            solution = "->".join(cycle)
+        else:
+            solution = "The graph does not contain an Eulerian cycle"
+        write_file_txt(input_file, solution)

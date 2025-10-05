@@ -200,7 +200,7 @@ def eulerian_path_direct(graph):
 
     return path
 
-def glue_sequences(path, k, d):
+def glue_sequences_mutation_check(path, k, d):
     glued = ''
     seq1_array = []
     seq2_array = []
@@ -214,25 +214,84 @@ def glue_sequences(path, k, d):
     if sum(comparison_seq)== len(comparison_seq):
         glued += for_seq[:k+d] + rev_seq
     else:
-        return "there is no string speeded by the gapped patterns"
+        return "there is no string spelled by the gapped patterns"
     return glued
 
+
+################### EVAL FUCTION ###########################
+# Testing with files
+def read_file_txt(file_path):
+    try:
+        with open(file_path, "r") as file:
+            content = file.readlines()
+            return content
+    except FileNotFoundError:
+        print(f"Error File not found at {file_path}")
+    except Exception as error:
+        print(f"Error while reading file {file_path}: {error}")
+
+
+def write_file_txt(file_path, content):
+    name_split = file_path.split("/")
+    output_name = f"./outputs/{name_split[-1].strip(".txt")}_output.txt"
+    with open(output_name, "w") as f:
+        match content:
+            case str():
+                print(content, file=f)
+            case int():
+                print(str(content), file=f)
+            case list():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case set():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case dict():
+                for key in content:
+                    print(str(key), end="\n", file=f)
 # Example usage
+# Example graph
+#     kmers = ['GACC|GCGC', 'ACCG|CGCC', 'CCGA|GCCG', 'CGAG|CCGG', 'GAGC|CGGA']
+#     k = 4
+#     d = 2
+#     graph_seq = PairedCompositeGraph(kmers, k)
+#     # We suppose all graphs and sequences received are strongly connected
+#     if has_eulerian_cycle_direct(graph_seq):
+#         cycle = eulerian_cycle_direct(graph_seq)
+#         print("Eulerian cycle:", " -> ".join(map(str, cycle)))
+#         print("Glued sequence:", glue_sequences(cycle, k, d))
+#     else:
+#         path = eulerian_path_direct(graph_seq)
+#         if path:
+#             print("Eulerian path:", " -> ".join(map(str, path)))
+#             print("Glued sequence:", glue_sequences(path, k, d))
+#         else:
+#             print("Neither Eulerian path nor Eulerian cycle was found.")
+
+
 if __name__ == "__main__":
-    # Example graph
-    kmers = ['GACC|GCGC', 'ACCG|CGCC', 'CCGA|GCCG', 'CGAG|CCGG', 'GAGC|CGGA']
-    k = 4
-    d = 2
-    graph_seq = PairedCompositeGraph(kmers, k)
-    # We suppose all graphs and sequences received are strongly connected
-    if has_eulerian_cycle_direct(graph_seq):
-        cycle = eulerian_cycle_direct(graph_seq)
-        print("Eulerian cycle:", " -> ".join(map(str, cycle)))
-        print("Glued sequence:", glue_sequences(cycle, k, d))
-    else:
-        path = eulerian_path_direct(graph_seq)
-        if path:
-            print("Eulerian path:", " -> ".join(map(str, path)))
-            print("Glued sequence:", glue_sequences(path, k, d))
+    folder_path = "./inputs"
+    input_files = glob.glob(f"{folder_path}/*.txt")
+
+    # #MODIFY THIS SECTION FOR EACH FUNCTION
+    for input_file in input_files:
+        file_load = read_file_txt(input_file)
+        file_load = [l.strip() for l in file_load]
+        (k, d) = map(int, file_load[0].split(' '))
+        kmers = []
+        for line in file_load[1:]:
+            kmers.append(line)
+        graph_seq = PairedCompositeGraph(kmers, k)
+        # We suppose all graphs and sequences received are strongly connected
+        if has_eulerian_cycle_direct(graph_seq):
+            cycle = eulerian_cycle_direct(graph_seq)
+            # print("Eulerian cycle:", " -> ".join(map(str, cycle)))
+            solution: glue_sequences_mutation_check(cycle, k, d)
         else:
-            print("Neither Eulerian path nor Eulerian cycle was found.")
+            path = eulerian_path_direct(graph_seq)
+            if path:
+                # print("Eulerian path:", " -> ".join(map(str, path)))
+                solution = glue_sequences_mutation_check(path, k, d)
+            else:
+                solution = "Neither Eulerian path nor Eulerian cycle was found."
+        write_file_txt(input_file, solution)

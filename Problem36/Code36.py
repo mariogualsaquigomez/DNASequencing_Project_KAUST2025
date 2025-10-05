@@ -14,6 +14,7 @@ Return: All contigs in DeBruijn(Patterns). (You may return the strings in any or
 from collections import defaultdict
 import glob
 
+
 class Node:
     def __init__(self, value):
         self.value = value  # Unique identifier or data for the node
@@ -26,6 +27,7 @@ class Node:
 
     def __repr__(self):
         return f"{self.value}"
+
 
 class Graph:
     def __init__(self):
@@ -69,105 +71,61 @@ class Graph:
                 graph_repr += f"{node_value} -> {",".join(neighbor_values)}\n"
         return graph_repr
 
-def CompositeGraph(ListPatterns, k):
-    Debruijn_graph = Graph()
-    # k = len(ListPatterns[0])
-    for pattern in ListPatterns:
-        Debruijn_graph.add_edge(pattern[:-1], pattern[1:])
-    return Debruijn_graph
 
-def find_contigs(graph):
-    """
-    Find all contigs (maximal non-branching paths) in a de Bruijn graph.
-    
-    Args:
-        graph: A Graph object representing the de Bruijn graph
-        
-    Returns:
-        list: A list of paths, where each path is a list of node values representing a contig
-    """
-    # Helper function to count incoming edges to a node
-    def count_in_edges(node_value):
-        count = 0
-        for node in graph.nodes.values():
-            for neighbor in node.neighbors:
-                if neighbor.value == node_value:
-                    count += 1
-        return count
+def MaximalNonBranchingPaths(graph):
+    # Calculate in-degrees and out-degrees
+    in_degree = defaultdict(int)
+    out_degree = defaultdict(int)
+    for node_val, node_obj in graph.nodes.items():
+        out_degree[node_val] = len(node_obj.neighbors)
+        for neighbor in node_obj.neighbors:
+            in_degree[neighbor.value] += 1
 
-    # Helper function to check if a node has exactly one incoming and one outgoing edge
-    def is_1_in_1_out(node_value):
-        in_degree = count_in_edges(node_value)
-        out_degree = len(graph.nodes[node_value].neighbors)
-        return in_degree == 1 and out_degree == 1
+    paths = []
+    nodes_in_paths = set()
 
-    # def find_non_branching_path(start_node):
-    #     """Find a maximal non-branching path starting from given node"""
-    #     path = [start_node.value]
-    #     current = start_node
-    #
-    #     while current.neighbors:
-    #         # Get the next node
-    #         next_node = current.neighbors[0]
-    #
-    #         # If next node is not 1-in-1-out, stop
-    #         if not is_1_in_1_out(next_node.value):
-    #             path.append(next_node.value)
-    #             break
-    #
-    #         path.append(next_node.value)
-    #         current = next_node
-    #
-    #         # If we've reached a node that's already been visited, stop
-    #         if next_node.value == start_node.value:
-    #             break
-    #
-    #     return path
+    # Find paths starting from non-1-in-1-out nodes
+    for v_value in graph.nodes:
+        is_1_in_1_out = in_degree[v_value] == 1 and out_degree[v_value] == 1
+        if not is_1_in_1_out:
+            if out_degree[v_value] > 0:
+                for w_node in graph.nodes[v_value].neighbors:
+                    path = [v_value, w_node.value]
+                    nodes_in_paths.add(v_value)
+                    nodes_in_paths.add(w_node.value)
 
-    contigs = []
-    visited = set()
+                    current_node = w_node.value
+                    while in_degree[current_node] == 1 and out_degree[current_node] == 1:
+                        next_node = graph.nodes[current_node].neighbors[0]
+                        path.append(next_node.value)
+                        nodes_in_paths.add(next_node.value)
+                        current_node = next_node.value
 
-    # Find all nodes that are not 1-in-1-out or have no outgoing edges
-    for node_value, node in graph.nodes.items():
-        if not is_1_in_1_out(node_value) and node.neighbors:
-            # Start a new non-branching path from each outgoing edge
-            for neighbor in node.neighbors:
-                path = [node_value, neighbor.value]
-                current = neighbor
+                    paths.append(path)
 
-                # Extend the path while possible
-                while is_1_in_1_out(current.value) and current.neighbors:
-                    next_node = current.neighbors[0]
-                    path.append(next_node.value)
-                    current = next_node
+    # Find isolated cycles from the remaining nodes
+    all_nodes = set(graph.nodes.keys())
+    remaining_nodes = all_nodes - nodes_in_paths
 
-                contigs.append(path)
+    while remaining_nodes:
+        start_node = remaining_nodes.pop()
 
-    # Find isolated cycles (all nodes are 1-in-1-out)
-    # for node_value, node in graph.nodes.items():
-    #     if is_1_in_1_out(node_value) and node_value not in visited:
-    #         path = find_non_branching_path(node)
-    #         if len(path) > 1:
-    #             contigs.append(path)
-    #             visited.update(path)
-    
-    return contigs
+        cycle_path = [start_node]
+        current_node = start_node
 
-# #example
-# # Create a sample de Bruijn graph
-#     kmers = ['ATG','ATG','TGT','TGG','CAT','GGA','GAT','AGA']
-#     k = 3
-#     graph = CompositeGraph(kmers, k)
-#
-#     # Find contigs
-#     contigs = find_contigs(graph)
-#
-#     # Print results
-#     print("Contigs found:")
-#     for contig in contigs:
-#         # Reconstruct the sequence from the path
-#         sequence = contig[0] + ''.join(node[-1] for node in contig[1:])
-#         print(sequence)
+        # Traverse the cycle
+        next_node = graph.nodes[current_node].neighbors[0]
+        while next_node.value != start_node:
+            cycle_path.append(next_node.value)
+            if next_node.value in remaining_nodes:
+                remaining_nodes.remove(next_node.value)
+            next_node = graph.nodes[next_node.value].neighbors[0]
+
+        cycle_path.append(start_node)
+        paths.append(cycle_path)
+
+    return paths
+
 ################### EVAL FUCTION ###########################
 # Testing with files
 def read_file_txt(file_path):
@@ -179,6 +137,7 @@ def read_file_txt(file_path):
         print(f"Error File not found at {file_path}")
     except Exception as error:
         print(f"Error while reading file {file_path}: {error}")
+
 
 def write_file_txt(file_path, content):
     name_split = file_path.split("/")
@@ -199,6 +158,7 @@ def write_file_txt(file_path, content):
                 for key in content:
                     print(str(key), end="\n", file=f)
 
+
 if __name__ == "__main__":
     # Getting Files
     folder_path = "./inputs"
@@ -208,16 +168,20 @@ if __name__ == "__main__":
     for input_file in input_files:
         file_load = read_file_txt(input_file)
         file_load = [l.strip() for l in file_load]
-        kmers = []
+        graph = Graph()
         for line in file_load:
-            kmers.append(line)
-        graph = CompositeGraph(kmers, len(kmers[0]))
+            node, neigbours = line.split("->")
+            node = node.strip()
+            neigbours = neigbours.split(',')
+            for neighbor in neigbours:
+                neighbor = neighbor.strip()
+                graph.add_edge(node, neighbor)
         # Find contigs
-        contigs = find_contigs(graph)
+        branches = MaximalNonBranchingPaths(graph)
         # Print results
         sequences = []
-        for contig in contigs:
+        for b in branches:
             # Reconstruct the sequence from the path
-            sequences.append(contig[0] + ''.join(node[-1] for node in contig[1:]))
-        solution = "\n".join(sorted(sequences))
+            sequences.append('->'.join(node for node in b))
+        solution = "\n".join(sequences)
         write_file_txt(input_file, solution)

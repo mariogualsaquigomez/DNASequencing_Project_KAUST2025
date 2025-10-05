@@ -192,19 +192,77 @@ def eulerian_path_direct(graph):
     
     return path
 
-# Example usage
+
+################### EVAL FUCTION ###########################
+# Testing with files
+def read_file_txt(file_path):
+    try:
+        with open(file_path, "r") as file:
+            content = file.readlines()
+            return content
+    except FileNotFoundError:
+        print(f"Error File not found at {file_path}")
+    except Exception as error:
+        print(f"Error while reading file {file_path}: {error}")
+
+
+def write_file_txt(file_path, content):
+    name_split = file_path.split("/")
+    output_name = f"./outputs/{name_split[-1].strip(".txt")}_output.txt"
+    with open(output_name, "w") as f:
+        match content:
+            case str():
+                print(content, file=f)
+            case int():
+                print(str(content), file=f)
+            case list():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case set():
+                for text in content:
+                    print(str(text), end="\n", file=f)
+            case dict():
+                for key in content:
+                    print(str(key), end="\n", file=f)
+
+# # Example graph
+#     kmers = ['CTTA', 'ACCA', 'TACC', 'GGCT', 'GCTT', 'TTAC']
+#     k = 4
+#     graph_seq = CompositeGraph(kmers, k)
+#     #We suppose all graphs and sequences received are strongly connected
+#     if has_eulerian_cycle_direct(graph_seq):
+#         cycle = eulerian_cycle_direct(graph_seq)
+#         print("Eulerian cycle:", " -> ".join(map(str, cycle)))
+#     else:
+#         path = eulerian_path_direct(graph_seq)
+#         if path:
+#             print(path[0] + "".join(p[-1] for p in path[1:]))
+#         else:
+#             print("Neither Eulerian path nor Eulerian cycle was found.")
+
+
+# Getting txt files
 if __name__ == "__main__":
-    # Example graph
-    kmers = ['CTTA', 'ACCA', 'TACC', 'GGCT', 'GCTT', 'TTAC']
-    k = 4
-    graph_seq = CompositeGraph(kmers, k)
-    #We suppose all graphs and sequences received are strongly connected
-    if has_eulerian_cycle_direct(graph_seq):
-        cycle = eulerian_cycle_direct(graph_seq)
-        print("Eulerian cycle:", " -> ".join(map(str, cycle)))
-    else:
-        path = eulerian_path_direct(graph_seq)
-        if path:
-            print(path[0] + "".join(p[-1] for p in path[1:]))
+    folder_path = "./inputs"
+    input_files = glob.glob(f"{folder_path}/*.txt")
+
+    # #MODIFY THIS SECTION FOR EACH FUNCTION
+    for input_file in input_files:
+        file_load = read_file_txt(input_file)
+        file_load = [l.strip() for l in file_load]
+        k = int(file_load[0])
+        kmers = []
+        for line in file_load[1:]:
+            kmers.append(line)
+        graph_seq = CompositeGraph(kmers, k)
+        if has_eulerian_cycle_direct(graph_seq):
+            cycle = eulerian_cycle_direct(graph_seq)
+            #solution = " -> ".join(map(str, cycle))
+            solution = cycle[0]+''.join(c[-1]for p in path[1:-1])
         else:
-            print("Neither Eulerian path nor Eulerian cycle was found.")
+            path = eulerian_path_direct(graph_seq)
+            if path:
+                solution = path[0] + "".join(p[-1] for p in path[1:])
+            else:
+                print("Neither Eulerian path nor Eulerian cycle was found.")
+        write_file_txt(input_file, solution)

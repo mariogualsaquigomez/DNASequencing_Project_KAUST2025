@@ -245,12 +245,13 @@ def universal_circular_string(k):
     return result[:-k + 1]  # Remove last k-1 characters as they overlap with the beginning
 
 
-# Example usage:
+# Usage:
 if __name__ == "__main__":
-    k = 4  # Change this value to generate different length universal strings
+    k = 9  # Change this value to generate different length universal strings
     result = universal_circular_string(k)
     if result:
         print(f"{result}")
+        ##DEBUG CODE
         # print(f"{k}-universal circular binary string: {result}")
         # # Verify all k-mers are present
         # all_kmers = generate_binary_kmers(k)
