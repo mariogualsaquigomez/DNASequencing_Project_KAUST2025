@@ -5,12 +5,12 @@ Codes related to the task of the Chapter 3 in the book Bioinformatics algorithms
 - TASK 25: PASSED
 - TASK 26: PASSED
 - TASK 27: PASSED
-- TASK 28:
-- TASK 29:
-- TASK 30:
-- TASK 31:
-- TASK 32:
-- TASK 33:
-- TASK 34:
-- TASK 35:
-- TASK 36:
+- TASK 28: PASSED
+- TASK 29: PASSED
+- TASK 30: PASSED
+- TASK 31: PASSED
+- TASK 32: PASSED
+- TASK 33: PASSED
+- TASK 34: PASSED
+- TASK 35: PASSED
+- TASK 36: PASSED
