@@ -25,6 +25,6 @@ The above code solutions were written in jupyter notebooks. Will organize them l
 - [x] p31   -   PASSED
 - [x] p32   -   PASSED
 - [x] p33   -   PASSED
-- [ ] p34
-- [ ] p35
-- [ ] p36
+- [x] p34   -   PASSED
+- [x] p35   -   PASSED
+- [x] p36   -   PASSED
